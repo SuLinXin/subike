@@ -1,0 +1,9 @@
+
+#spring
+spring:
+  datasource:
+    name: subike
+    url: jdbc:mysql://127.0.0.1:3306/subike
+    username: root
+    password: root
+SSS
