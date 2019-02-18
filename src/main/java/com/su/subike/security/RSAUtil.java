@@ -6,10 +6,7 @@ import javax.crypto.Cipher;
 
 
 import java.io.InputStream;
-import java.security.GeneralSecurityException;
-import java.security.Key;
-import java.security.KeyFactory;
-import java.security.PrivateKey;
+import java.security.*;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.X509EncodedKeySpec;
 
@@ -23,7 +20,7 @@ public class RSAUtil {
     /**
      * 公钥字符串
      */
-    private static String PUBLIC_KEY ="MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCkMzmWUaJ9Xm+qsE+PJ79J MPrjxTZirU1QaIVTjKXzw3YskkRQ6Wh7KgewBINR+H0QoGTVW8mhBF1ZDxI7 +aqqFgD3mOB4Ct1GTwt5a8Qf4n/auLhjXlt31h6qkI2HZFwuIO/c9xJ2d9Hs Ozjl+ZT+N13fd0/bwVxWVizRWjgJMQIDAQAB";
+    private static String PUBLIC_KEY ="MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCaZ2Z1LAfQDMCgdl27KNxr HW+eZCTq24v/e9VwaFfzGPu4T2m3ufYpe47/Rf8F98Yft6PQvuDXte/7lgwG VpIsTPDHumx0Rfaw2/ArmgFof4oiAA563iEIQHU9lL80s39/9f0q1DEAv0Lq gt3ZbQfJCqgj+zCmP3iSd7PUaxA8fQIDAQAB";
 
     public static final String KEY_ALGORITHM = "RSA";
 

@@ -2,7 +2,7 @@ package com.su.subike.security;
 
 import org.springframework.boot.jdbc.metadata.DataSourcePoolMetadata;
 
-import javax.crypto.Cipher;
+import javax.crypto.*;
 import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 import java.io.UnsupportedEncodingException;
@@ -63,7 +63,7 @@ public class AESUtil {
         System.out.println(decrypt(enResult,key));
 
         /**RSA 加密AES的密钥**/
-        byte[] enKey = RSAUtil.encryptByPublicKey(key.getBytes("UTF-8"),"MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCkMzmWUaJ9Xm+qsE+PJ79J MPrjxTZirU1QaIVTjKXzw3YskkRQ6Wh7KgewBINR+H0QoGTVW8mhBF1ZDxI7 +aqqFgD3mOB4Ct1GTwt5a8Qf4n/auLhjXlt31h6qkI2HZFwuIO/c9xJ2d9Hs Ozjl+ZT+N13fd0/bwVxWVizRWjgJMQIDAQAB");
+        byte[] enKey = RSAUtil.encryptByPublicKey(key.getBytes("UTF-8"),"MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCaZ2Z1LAfQDMCgdl27KNxr HW+eZCTq24v/e9VwaFfzGPu4T2m3ufYpe47/Rf8F98Yft6PQvuDXte/7lgwG VpIsTPDHumx0Rfaw2/ArmgFof4oiAA563iEIQHU9lL80s39/9f0q1DEAv0Lq gt3ZbQfJCqgj+zCmP3iSd7PUaxA8fQIDAQAB");
         System.out.println(new String(enKey,"UTF-8"));
         String baseKey = Base64Util.encode(enKey);
 
