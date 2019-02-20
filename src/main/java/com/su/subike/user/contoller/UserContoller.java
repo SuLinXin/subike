@@ -1,6 +1,8 @@
 package com.su.subike.user.contoller;
 
+import com.alibaba.druid.util.StringUtils;
 import com.su.subike.common.constants.Constants;
+import com.su.subike.common.exception.SuBikeException;
 import com.su.subike.common.resp.ApiResult;
 import com.su.subike.user.dao.UserMapper;
 import com.su.subike.user.entity.LoginInfo;
@@ -10,9 +12,11 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.MediaType;
+import org.springframework.web.bind.annotation.*;
+
+import java.awt.*;
+
 @Slf4j
 @RestController
 @RequestMapping("user")
@@ -31,14 +35,23 @@ public class UserContoller {
     @Qualifier("userServiceImpl")
     private UserService userService;
 
-    @RequestMapping("/login")
-    public ApiResult<String> login(@ResponseBody LoginInfo loginInfo){
+    @RequestMapping(value = "/login",method = RequestMethod.POST,produces = MediaType.APPLICATION_JSON_VALUE)
+    public ApiResult<String> login(@RequestBody LoginInfo loginInfo){
 
         ApiResult<String> resp = new ApiResult<>();
 
         try{
+            String data = loginInfo.getData();
+            String key = loginInfo.getKey();
+            if(StringUtils.isEmpty(data) || StringUtils.isEmpty(key)){
+                throw new SuBikeException("参数校准失败");
+            }
+
             String token = userService.login();
             resp.setData(token);
+        }catch (SuBikeException e){
+                resp.setCode(Constants.RESP_STATUS_INTERNAL_ERROR);
+                resp.setMessage(e.getMessage());
         }catch (Exception e){
             log.error("Fail to login",e);
             resp.setCode(Constants.RESP_STATUS_BADREQUEST);
