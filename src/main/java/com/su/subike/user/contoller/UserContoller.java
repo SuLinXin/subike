@@ -47,6 +47,7 @@ public class UserContoller {
                 throw new SuBikeException("参数校准失败");
             }
 
+
             String token = userService.login();
             resp.setData(token);
         }catch (SuBikeException e){
