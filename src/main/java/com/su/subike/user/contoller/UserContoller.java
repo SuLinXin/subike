@@ -48,7 +48,7 @@ public class UserContoller {
             }
 
 
-            String token = userService.login();
+            String token = userService.login(data,key);
             resp.setData(token);
         }catch (SuBikeException e){
                 resp.setCode(Constants.RESP_STATUS_INTERNAL_ERROR);

@@ -12,7 +12,7 @@ public class UserServiceImpl implements UserService {
     private UserMapper userMapper;
 
     @Override
-    public String login() {
+    public String login(String data, String key) {
         User user = new User();
         user.setId(1L);
         userMapper.insertSelective(user);
