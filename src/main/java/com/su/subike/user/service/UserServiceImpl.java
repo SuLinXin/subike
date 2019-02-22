@@ -2,6 +2,7 @@ package com.su.subike.user.service;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.su.subike.cache.CommonCacheUtil;
 import com.su.subike.common.exception.SuBikeException;
 import com.su.subike.security.AESUtil;
 import com.su.subike.security.Base64Util;
@@ -13,6 +14,7 @@ import org.mybatis.generator.internal.util.StringUtility;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
+import sun.security.provider.MD5;
 
 import java.io.UnsupportedEncodingException;
 @Slf4j
@@ -21,6 +23,9 @@ public class UserServiceImpl implements UserService {
 
     @Autowired
     private UserMapper userMapper;
+
+    @Autowired
+    private CommonCacheUtil cacheUtil;
 
     @Override
     public String login(String data, String key) throws SuBikeException {
@@ -40,9 +45,23 @@ public class UserServiceImpl implements UserService {
                 throw new Exception();
             }
             //去redis去取验证码 匹配
-
+            String verCode =  cacheUtil.getCacheValue(mobile);
+            User user;
+            if(code.equals(verCode)){
+                //手机匹配
+                user = userMapper.selectByMobile(mobile);
+                if(user == null){
+                    user = new User();
+                    user.setMobile(mobile);
+                    user.setNickname(mobile);
+                    userMapper.insertSelective(user);
+                }
+            }else {
+                throw new SuBikeException("手机验证码错误，请检查");
+            }
 
             //判断用户是否在数据库，没有的话帮他注册，插入数据库，生成token存在redis
+            token = generateToken(user);
         }catch (Exception e) {
             log.error("Fail to decrypt data",e);
             e.printStackTrace();
@@ -50,4 +69,11 @@ public class UserServiceImpl implements UserService {
         }
         return null;
     }
+
+    private String generateToken(User user) {
+        String source = user.getId()+":"+user.getMobile()+":"+System.currentTimeMillis();
+        return MD5Util.getMD5(source);
+    }
+
+
 }
