@@ -8,3 +8,9 @@ spring:
     password: root
 logging:
   config: classpath:logback.xml
+redis:
+  host: 127.0.0.1
+  port: 6379
+  max-idle: 5
+  max-totle: 10
+  max-wait-millis: 3000

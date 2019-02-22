@@ -29,14 +29,14 @@ public class SubikeApplicationTests {
 		String result = testRestTemplate.getForObject("/user/hello", String.class);
 		System.out.println(result);
 	}
-	@Test
-	public void test() {
-		try {
-			userService.login(data, key);
-		} catch (Exception e) {
-			log.error("出错了666", e);
-		}
-	}
+//	@Test
+//	public void test() {
+//		try {
+//			userService.login(data, key);
+//		} catch (Exception e) {
+//			log.error("出错了666", e);
+//		}
+//	}
 
 }
 

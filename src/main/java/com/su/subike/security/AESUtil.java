@@ -53,24 +53,24 @@ public class AESUtil {
         return  null;
     }
 
-
-    public static void main(String[] args) throws Exception {
-        /**AES加密数据**/
-        String key = "qwertyuiopasd123";
-        String message = "苏苏苏加解密测试";
-        String enResult = encrypt(message,key);
-        System.out.println(enResult);
-        System.out.println(decrypt(enResult,key));
-
-        /**RSA 加密AES的密钥**/
-        byte[] enKey = RSAUtil.encryptByPublicKey(key.getBytes("UTF-8"),"MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCaZ2Z1LAfQDMCgdl27KNxr HW+eZCTq24v/e9VwaFfzGPu4T2m3ufYpe47/Rf8F98Yft6PQvuDXte/7lgwG VpIsTPDHumx0Rfaw2/ArmgFof4oiAA563iEIQHU9lL80s39/9f0q1DEAv0Lq gt3ZbQfJCqgj+zCmP3iSd7PUaxA8fQIDAQAB");
-        System.out.println(new String(enKey,"UTF-8"));
-        String baseKey = Base64Util.encode(enKey);
-
-
-        /**服务端RSA解密AES的key**/
-        byte[] de = Base64Util.decode(baseKey);
-        byte[] deKey = RSAUtil.decryptByPrivateKey(de);
-        System.out.println(new String(deKey,"UTF-8"));
-    }
+//
+//    public static void main(String[] args) throws Exception {
+//        /**AES加密数据**/
+//        String key = "qwertyuiopasd123";
+//        String dataToEn = "{'mobile':'15100206985','code':'666','platform':'android'}";
+//        String enResult = encrypt(dataToEn,key);
+//        System.out.println(enResult);
+////        System.out.println(decrypt(enResult,key));
+//
+//        /**RSA 加密AES的密钥**/
+//        byte[] enKey = RSAUtil.encryptByPublicKey(key.getBytes("UTF-8"),"MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQCaZ2Z1LAfQDMCgdl27KNxr HW+eZCTq24v/e9VwaFfzGPu4T2m3ufYpe47/Rf8F98Yft6PQvuDXte/7lgwG VpIsTPDHumx0Rfaw2/ArmgFof4oiAA563iEIQHU9lL80s39/9f0q1DEAv0Lq gt3ZbQfJCqgj+zCmP3iSd7PUaxA8fQIDAQAB");
+////        System.out.println(new String(enKey,"UTF-8"));
+//
+//        String baseKey = Base64Util.encode(enKey);
+//        System.out.println(baseKey);
+//        /**服务端RSA解密AES的key**/
+////        byte[] de = Base64Util.decode(baseKey);
+////        byte[] deKey = RSAUtil.decryptByPrivateKey(de);
+////        System.out.println(new String(deKey,"UTF-8"));
+//    }
 }
