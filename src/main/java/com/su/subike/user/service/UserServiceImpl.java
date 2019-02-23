@@ -6,9 +6,11 @@ import com.su.subike.cache.CommonCacheUtil;
 import com.su.subike.common.exception.SuBikeException;
 import com.su.subike.security.AESUtil;
 import com.su.subike.security.Base64Util;
+import com.su.subike.security.MD5Util;
 import com.su.subike.security.RSAUtil;
 import com.su.subike.user.dao.UserMapper;
 import com.su.subike.user.entity.User;
+import com.su.subike.user.entity.UserElement;
 import lombok.extern.slf4j.Slf4j;
 import org.mybatis.generator.internal.util.StringUtility;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,6 +43,7 @@ public class UserServiceImpl implements UserService {
             JSONObject jsonObject = JSON.parseObject(decryptData);
             String mobile = jsonObject.getString("mobile");
             String code = jsonObject.getString("code");
+            String platform = jsonObject.getString("platform");
             if(StringUtils.isEmpty(mobile)|| StringUtils.isEmpty(code)){
                 throw new Exception();
             }
@@ -61,7 +64,21 @@ public class UserServiceImpl implements UserService {
             }
 
             //判断用户是否在数据库，没有的话帮他注册，插入数据库，生成token存在redis
-            token = generateToken(user);
+            try {
+                token = generateToken(user);
+            }catch (Exception e){
+                throw new SuBikeException("获取token失败");
+            }
+
+
+            UserElement ue = new UserElement();
+            ue.setMobile(user.getMobile());
+            ue.setUserId(user.getId());
+            ue.setToken(token);
+            ue.setPlatform(platform);
+
+            cacheUtil.putTokenWhenLogin(ue);
+
         }catch (Exception e) {
             log.error("Fail to decrypt data",e);
             e.printStackTrace();
@@ -70,6 +87,11 @@ public class UserServiceImpl implements UserService {
         return null;
     }
 
+    /**
+     * 生成token方法
+     * @param user
+     * @return
+     */
     private String generateToken(User user) {
         String source = user.getId()+":"+user.getMobile()+":"+System.currentTimeMillis();
         return MD5Util.getMD5(source);

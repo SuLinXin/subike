@@ -36,7 +36,7 @@
       #{headImg,jdbcType=VARCHAR}, #{verifyFlag,jdbcType=TINYINT}, #{enableFlag,jdbcType=TINYINT}
       )
   </insert>
-  <insert id="insertSelective" parameterType="com.su.subike.user.entity.User" >
+  <insert id="insertSelective" parameterType="com.su.subike.user.entity.User" keyProperty="id" useGeneratedKeys="true">
     insert into user
     <trim prefix="(" suffix=")" suffixOverrides="," >
       <if test="id != null" >
