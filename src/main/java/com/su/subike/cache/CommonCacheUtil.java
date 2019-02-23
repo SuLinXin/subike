@@ -1,16 +1,20 @@
 package com.su.subike.cache;
 
 
+import com.su.subike.user.entity.UserElement;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
+import redis.clients.jedis.Transaction;
 
 @Component
 @Slf4j
 public class CommonCacheUtil {
 
+    private static final String TOKEN_PREFIX = "token.";
+    private static final String USER_PREFIX = "user.";
     @Autowired
     private JedisPoolWrapper jedisPoolWrapper;
 
@@ -94,6 +98,31 @@ public class CommonCacheUtil {
                     jedis.del(key);
                 } catch (Exception e) {
                     log.error("Fail to remove key from redis", e);
+                }
+            }
+        }
+    }
+
+    /**
+     * 登录时设置token
+     * @param ue
+     */
+    public void putTokenWhenLogin(UserElement ue) {
+        JedisPool pool = jedisPoolWrapper.getJedisPool();
+        if (pool != null) {
+
+            try (Jedis jedis = pool.getResource()) {
+                jedis.select(0);
+                Transaction trans = jedis.multi();
+                try {
+                    trans.del(TOKEN_PREFIX + ue.getToken());
+                    trans.hmset(TOKEN_PREFIX + ue.getToken(), ue.toMap());
+                    trans.expire(TOKEN_PREFIX + ue.getToken(), 2592000);
+                    trans.sadd(USER_PREFIX + ue.getUserId(), ue.getToken());
+                    trans.exec();
+                } catch (Exception e) {
+                    trans.discard();
+                    log.error("Fail to cache token to redis", e);
                 }
             }
         }

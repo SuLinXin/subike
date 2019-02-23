@@ -53,11 +53,11 @@ public class AESUtil {
         return  null;
     }
 
-//
+
 //    public static void main(String[] args) throws Exception {
 //        /**AES加密数据**/
 //        String key = "qwertyuiopasd123";
-//        String dataToEn = "{'mobile':'15100206985','code':'666','platform':'android'}";
+//        String dataToEn = "{'mobile':'15100206986','code':'6666','platform':'android'}";
 //        String enResult = encrypt(dataToEn,key);
 //        System.out.println(enResult);
 ////        System.out.println(decrypt(enResult,key));

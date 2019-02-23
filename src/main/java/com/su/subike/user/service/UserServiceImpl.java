@@ -72,7 +72,7 @@ public class UserServiceImpl implements UserService {
 
 
             UserElement ue = new UserElement();
-            ue.setMobile(user.getMobile());
+            ue.setMobile(mobile);
             ue.setUserId(user.getId());
             ue.setToken(token);
             ue.setPlatform(platform);
@@ -84,7 +84,7 @@ public class UserServiceImpl implements UserService {
             e.printStackTrace();
             throw new SuBikeException("数据解析异常");
         }
-        return null;
+        return token;
     }
 
     /**
