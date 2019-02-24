@@ -13,4 +13,5 @@ public class Constants {
     public static final int RESP_STATUS_BADREQUEST = 400;
     /**自定义状态码 end**/
 
+    public static final String REQUEST_TOKEN_KEY = "user-token";
 }

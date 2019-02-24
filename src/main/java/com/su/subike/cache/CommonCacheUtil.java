@@ -1,13 +1,18 @@
 package com.su.subike.cache;
 
 
+import com.su.subike.user.entity.User;
 import com.su.subike.user.entity.UserElement;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+import org.springframework.util.CollectionUtils;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
 import redis.clients.jedis.Transaction;
+
+import java.util.Collection;
+import java.util.Map;
 
 @Component
 @Slf4j
@@ -126,5 +131,30 @@ public class CommonCacheUtil {
                 }
             }
         }
+    }
+
+    public UserElement getUserByToken(String token) {
+
+        UserElement ue = null;
+        JedisPool pool = jedisPoolWrapper.getJedisPool();
+        if (pool != null) {
+            try (Jedis jedis = pool.getResource()) {
+                jedis.select(0);
+                try {
+                    Map<String,String> map= jedis.hgetAll(TOKEN_PREFIX+token);
+                    if (!CollectionUtils.isEmpty(map)){
+                        ue = UserElement.fromMap(map);
+                    }else {
+                        log.warn("fail to find cached element for token");
+                    }
+                } catch (Exception e) {
+
+                    log.error("Fail to get user by token in redis", e);
+                    throw e;
+                }
+            }
+        }
+
+        return ue;
     }
 }

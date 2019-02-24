@@ -4,6 +4,7 @@ import com.alibaba.druid.util.StringUtils;
 import com.su.subike.common.constants.Constants;
 import com.su.subike.common.exception.SuBikeException;
 import com.su.subike.common.resp.ApiResult;
+import com.su.subike.common.rest.BaseController;
 import com.su.subike.user.dao.UserMapper;
 import com.su.subike.user.entity.LoginInfo;
 import com.su.subike.user.entity.User;
@@ -21,7 +22,7 @@ import java.awt.*;
 @Slf4j
 @RestController
 @RequestMapping("user")
-public class UserContoller {
+public class UserContoller extends BaseController {
 
 
 //    @Autowired
@@ -64,6 +65,11 @@ public class UserContoller {
         return resp;
     }
 
+    /**
+     * 修改用户昵称
+     * @param user
+     * @return
+     */
     @RequestMapping("/modifyNickName")
     public ApiResult modifyNickName(@RequestBody User user){
         ApiResult resp = new ApiResult();
@@ -71,15 +77,16 @@ public class UserContoller {
         try{
 
             UserElement ue = getCurrentUser();
+            user.setId(ue.getUserId());
             userService.modifyNikeName(user);
             resp.setMessage("昵称修改成功");
         }catch (SuBikeException e){
             resp.setCode(Constants.RESP_STATUS_INTERNAL_ERROR);
             resp.setMessage(e.getMessage());
         }catch (Exception e){
-            log.error("Fail to login",e);
+            log.error("Fail to modify nicename",e);
             resp.setCode(Constants.RESP_STATUS_BADREQUEST);
-            resp.setMessage("login内部错误");
+            resp.setMessage("修改昵称失败");
         }
 
         return resp;
