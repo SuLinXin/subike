@@ -7,6 +7,7 @@ import com.su.subike.common.resp.ApiResult;
 import com.su.subike.user.dao.UserMapper;
 import com.su.subike.user.entity.LoginInfo;
 import com.su.subike.user.entity.User;
+import com.su.subike.user.entity.UserElement;
 import com.su.subike.user.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -59,6 +60,27 @@ public class UserContoller {
             resp.setMessage("login内部错误");
         }
 
+
+        return resp;
+    }
+
+    @RequestMapping("/modifyNickName")
+    public ApiResult modifyNickName(@RequestBody User user){
+        ApiResult resp = new ApiResult();
+
+        try{
+
+            UserElement ue = getCurrentUser();
+            userService.modifyNikeName(user);
+            resp.setMessage("昵称修改成功");
+        }catch (SuBikeException e){
+            resp.setCode(Constants.RESP_STATUS_INTERNAL_ERROR);
+            resp.setMessage(e.getMessage());
+        }catch (Exception e){
+            log.error("Fail to login",e);
+            resp.setCode(Constants.RESP_STATUS_BADREQUEST);
+            resp.setMessage("login内部错误");
+        }
 
         return resp;
     }

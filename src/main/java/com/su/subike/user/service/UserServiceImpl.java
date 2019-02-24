@@ -56,7 +56,7 @@ public class UserServiceImpl implements UserService {
                 if(user == null){
                     user = new User();
                     user.setMobile(mobile);
-                    user.setNickname(mobile);
+                     user.setNickname(mobile);
                     userMapper.insertSelective(user);
                 }
             }else {
@@ -85,6 +85,11 @@ public class UserServiceImpl implements UserService {
             throw new SuBikeException("数据解析异常");
         }
         return token;
+    }
+
+    @Override
+    public void modifyNikeName(User user) throws SuBikeException {
+        userMapper.updateByPrimaryKeySelective(user);
     }
 
     /**
