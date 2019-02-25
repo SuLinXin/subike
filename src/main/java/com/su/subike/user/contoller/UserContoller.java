@@ -80,6 +80,7 @@ public class UserContoller extends BaseController {
             user.setId(ue.getUserId());
             userService.modifyNikeName(user);
             resp.setMessage("昵称修改成功");
+
         }catch (SuBikeException e){
             resp.setCode(Constants.RESP_STATUS_INTERNAL_ERROR);
             resp.setMessage(e.getMessage());
