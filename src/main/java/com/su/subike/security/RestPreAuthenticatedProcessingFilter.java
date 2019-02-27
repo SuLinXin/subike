@@ -13,6 +13,7 @@ import javax.servlet.http.HttpServletRequest;
  **/
 public class RestPreAuthenticatedProcessingFilter extends AbstractPreAuthenticatedProcessingFilter {
 
+
     @Override
     protected Object getPreAuthenticatedPrincipal(HttpServletRequest httpServletRequest) {
         return null;
