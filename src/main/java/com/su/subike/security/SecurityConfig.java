@@ -22,6 +22,11 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
 
+    private RestPreAuthenticatedProcessingFilter getPreAuthenticatedProcessingFilter(){
+
+        return null;
+    }
+
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
         auth.authenticationProvider(new RestAuthenticationProvider());
@@ -35,6 +40,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .anyRequest().authenticated()
                 .and()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                ;
+                .and().httpBasic().authenticationEntryPoint(new RestAuthenticationEntryPoint())
+                .and().addFilter()
+        ;
     }
 }
