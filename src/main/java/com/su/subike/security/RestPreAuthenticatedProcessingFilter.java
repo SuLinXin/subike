@@ -3,6 +3,7 @@ package com.su.subike.security;
 import org.springframework.security.web.authentication.preauth.AbstractPreAuthenticatedProcessingFilter;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.sound.midi.SoundbankResource;
 
 /**
  * @ClassName RestPreAuthenticatedProcessingFilter
@@ -13,9 +14,10 @@ import javax.servlet.http.HttpServletRequest;
  **/
 public class RestPreAuthenticatedProcessingFilter extends AbstractPreAuthenticatedProcessingFilter {
 
-
     @Override
     protected Object getPreAuthenticatedPrincipal(HttpServletRequest httpServletRequest) {
+
+        System.out.println(111111);
         return null;
     }
 

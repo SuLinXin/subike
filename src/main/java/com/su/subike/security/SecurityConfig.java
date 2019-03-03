@@ -2,9 +2,11 @@ package com.su.subike.security;
 
 
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -22,9 +24,10 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
 
-    private RestPreAuthenticatedProcessingFilter getPreAuthenticatedProcessingFilter(){
-
-        return null;
+    private RestPreAuthenticatedProcessingFilter getPreAuthenticatedProcessingFilter() throws Exception {
+        RestPreAuthenticatedProcessingFilter filter = new RestPreAuthenticatedProcessingFilter();
+        filter.setAuthenticationManager(this.authenticationManagerBean());
+        return filter;
     }
 
     @Override
@@ -41,7 +44,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .and()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 .and().httpBasic().authenticationEntryPoint(new RestAuthenticationEntryPoint())
-                .and().addFilter()
+                .and().addFilter(getPreAuthenticatedProcessingFilter())
         ;
+    }
+
+
+    @Override
+    public void configure(WebSecurity web) throws Exception {
+        web.ignoring().antMatchers(HttpMethod.OPTIONS,"/**");
     }
 }
