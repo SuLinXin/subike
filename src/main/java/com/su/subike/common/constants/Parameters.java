@@ -4,6 +4,8 @@ import lombok.Data;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import java.util.List;
+
 @Component
 @Data
 public class Parameters {
@@ -23,4 +25,8 @@ public class Parameters {
     @Value("${redis.max-wait-millis}")
     private int redisMaxWaitMillis;
     /*****redis config end*******/
+
+
+    @Value("#{'${security.noneSecurityPath}'.split(',')}")
+    private List<String> noneSecurityPath;
 }

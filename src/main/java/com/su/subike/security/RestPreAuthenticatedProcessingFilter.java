@@ -1,9 +1,11 @@
 package com.su.subike.security;
 
+import com.su.subike.cache.CommonCacheUtil;
 import org.springframework.security.web.authentication.preauth.AbstractPreAuthenticatedProcessingFilter;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.sound.midi.SoundbankResource;
+import java.util.List;
 
 /**
  * @ClassName RestPreAuthenticatedProcessingFilter
@@ -13,6 +15,16 @@ import javax.sound.midi.SoundbankResource;
  * Version 1.0
  **/
 public class RestPreAuthenticatedProcessingFilter extends AbstractPreAuthenticatedProcessingFilter {
+
+
+    private List<String> noneSecurityPath;
+
+    private CommonCacheUtil commonCacheUtil;
+
+    public RestPreAuthenticatedProcessingFilter(List<String> noneSecurityPath, CommonCacheUtil commonCacheUtil) {
+        this.noneSecurityPath = noneSecurityPath;
+        this.commonCacheUtil = commonCacheUtil;
+    }
 
     @Override
     protected Object getPreAuthenticatedPrincipal(HttpServletRequest httpServletRequest) {

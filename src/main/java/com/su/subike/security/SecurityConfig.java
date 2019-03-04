@@ -1,6 +1,8 @@
 package com.su.subike.security;
 
 
+import com.su.subike.common.constants.Parameters;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -24,6 +26,9 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
 
+    @Autowired
+    private Parameters parameters;
+
     private RestPreAuthenticatedProcessingFilter getPreAuthenticatedProcessingFilter() throws Exception {
         RestPreAuthenticatedProcessingFilter filter = new RestPreAuthenticatedProcessingFilter();
         filter.setAuthenticationManager(this.authenticationManagerBean());
@@ -39,7 +44,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http.csrf().disable()
                 .authorizeRequests()
-                .antMatchers("/**/login").permitAll()
+                .antMatchers(parameters.getNoneSecurityPath().toArray(new String[parameters.getNoneSecurityPath().size()])).permitAll()
                 .anyRequest().authenticated()
                 .and()
                 .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
