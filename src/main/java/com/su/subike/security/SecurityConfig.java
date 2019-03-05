@@ -1,10 +1,13 @@
 package com.su.subike.security;
 
 
+import com.su.subike.cache.CommonCacheUtil;
 import com.su.subike.common.constants.Parameters;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
+import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -28,9 +31,19 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Autowired
     private Parameters parameters;
+    @Autowired
+    private CommonCacheUtil commonCacheUtil;
+
+
+    @Bean
+    @Override
+    public AuthenticationManager authenticationManagerBean() throws Exception {
+        return super.authenticationManagerBean();
+    }
+
 
     private RestPreAuthenticatedProcessingFilter getPreAuthenticatedProcessingFilter() throws Exception {
-        RestPreAuthenticatedProcessingFilter filter = new RestPreAuthenticatedProcessingFilter();
+        RestPreAuthenticatedProcessingFilter filter = new RestPreAuthenticatedProcessingFilter(parameters.getNoneSecurityPath(),commonCacheUtil);
         filter.setAuthenticationManager(this.authenticationManagerBean());
         return filter;
     }
