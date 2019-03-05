@@ -14,4 +14,6 @@ public class Constants {
     /**自定义状态码 end**/
 
     public static final String REQUEST_TOKEN_KEY = "user-token";
+
+    public static final String REQUEST_VERSION_KEY = "version";
 }
