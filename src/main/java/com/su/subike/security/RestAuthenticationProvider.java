@@ -53,8 +53,7 @@ public class RestAuthenticationProvider implements AuthenticationProvider {
      *@Description 校验授权token是不是合法 符合要求
      */
     @Override
-    @Override
-    public boolean supports(Class<?> aClass) {
+    public boolean supports(Class<?> authentication) {
         return PreAuthenticatedAuthenticationToken.class.isAssignableFrom(authentication)||RestAuthenticationToken.class.isAssignableFrom(authentication);
     }
 }
