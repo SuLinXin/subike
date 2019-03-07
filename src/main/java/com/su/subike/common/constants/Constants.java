@@ -16,4 +16,13 @@ public class Constants {
     public static final String REQUEST_TOKEN_KEY = "user-token";
 
     public static final String REQUEST_VERSION_KEY = "version";
+
+
+    /**短信验证接口 start**/
+    public static final String MDSMS_ACCOUNT_SID = "80030672388947c08cb94b04de534af2";
+    public static final String MDSMS_AUTH_TOKEN = "131b2f4ed56a4b04ae044b729455d306";
+    public static final String MDSMS_REST_URL = "https://api.miaodiyun.com/20150822/industrySMS/sendSMS";
+    public static final String MDSMS_VERCODE_TPLID= "1454862394";
+
+    /**短信验证接口 end**/
 }
