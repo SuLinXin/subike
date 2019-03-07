@@ -96,6 +96,23 @@ public class UserContoller extends BaseController {
         return resp;
     }
 
+    @RequestMapping("/sendVercode")
+    public ApiResult sendVercode(@RequestBody User user){
+        ApiResult resp = new ApiResult();
+        try{
+
+
+        }catch (SuBikeException e){
+            resp.setCode(Constants.RESP_STATUS_INTERNAL_ERROR);
+            resp.setMessage(e.getMessage());
+        }catch (Exception e){
+            log.error("Fail to modify nicename",e);
+            resp.setCode(Constants.RESP_STATUS_BADREQUEST);
+            resp.setMessage("修改昵称失败");
+        }
+
+        return resp;
+    }
 
     /**
      *@Author
