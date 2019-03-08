@@ -102,6 +102,7 @@ public class UserContoller extends BaseController {
         try{
 
 
+
         }catch (SuBikeException e){
             resp.setCode(Constants.RESP_STATUS_INTERNAL_ERROR);
             resp.setMessage(e.getMessage());
