@@ -97,12 +97,10 @@ public class UserContoller extends BaseController {
     }
 
     @RequestMapping("/sendVercode")
-    public ApiResult sendVercode(@RequestBody User user){
+    public ApiResult sendVercode(@RequestBody User user,HttpServletRequest request){
         ApiResult resp = new ApiResult();
         try{
-
-
-
+            userService.sendVercode(user.getMobile(),getIpFromRequest(request));
         }catch (SuBikeException e){
             resp.setCode(Constants.RESP_STATUS_INTERNAL_ERROR);
             resp.setMessage(e.getMessage());

@@ -7,4 +7,6 @@ public interface UserService {
     String login(String data, String key) throws SuBikeException;
 
     void modifyNikeName(User user) throws SuBikeException;
+
+    void sendVercode(String mobile, String ipFromRequest);
 }

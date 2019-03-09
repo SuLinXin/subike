@@ -92,6 +92,11 @@ public class UserServiceImpl implements UserService {
         userMapper.updateByPrimaryKeySelective(user);
     }
 
+    @Override
+    public void sendVercode(String mobile, String ipFromRequest) {
+
+    }
+
     /**
      * 生成token方法
      * @param user
