@@ -6,6 +6,12 @@ spring:
     url: jdbc:mysql://127.0.0.1:3306/subike
     username: root
     password: root
+
+  #activemq
+  activemq:
+    borker-url: tcp://127.0.0.1:61616
+    pool:
+      enabled: false
 logging:
   config: classpath:logback.xml
 #reids

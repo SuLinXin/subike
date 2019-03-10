@@ -3,8 +3,10 @@ package com.su.subike.user.service;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.su.subike.cache.CommonCacheUtil;
+import com.su.subike.common.constants.Constants;
 import com.su.subike.common.exception.SuBikeException;
 import com.su.subike.common.utils.RandomNumberCode;
+import com.su.subike.jms.SmsProcessor;
 import com.su.subike.security.AESUtil;
 import com.su.subike.security.Base64Util;
 import com.su.subike.security.MD5Util;
@@ -13,19 +15,28 @@ import com.su.subike.user.dao.UserMapper;
 import com.su.subike.user.entity.User;
 import com.su.subike.user.entity.UserElement;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.activemq.command.ActiveMQQueue;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
+
+import javax.jms.Destination;
+import java.util.HashMap;
+import java.util.Map;
 
 @Slf4j
 @Service
 public class UserServiceImpl implements UserService {
 
+    private static final String SMS_QUEUE = "sms.queue";
     @Autowired
     private UserMapper userMapper;
 
     @Autowired
     private CommonCacheUtil cacheUtil;
+
+    @Autowired
+    private SmsProcessor smsProcessor;
 
     private static final String VERIFYCODE_PREFIX = "verify.code.";
     @Override
@@ -86,11 +97,22 @@ public class UserServiceImpl implements UserService {
         return token;
     }
 
+    /***
+     * 昵称修改
+     * @param user
+     * @throws SuBikeException
+     */
     @Override
     public void modifyNikeName(User user) throws SuBikeException {
         userMapper.updateByPrimaryKeySelective(user);
     }
 
+    /***
+     * 发送验证码
+     * @param mobile
+     * @param ip
+     * @throws SuBikeException
+     */
     @Override
     public void sendVercode(String mobile, String ip) throws SuBikeException{
 
@@ -106,6 +128,15 @@ public class UserServiceImpl implements UserService {
             log.info("超过当日验证码次数上限 {}", ip);
             throw new SuBikeException(ip + "超过当日验证码次数上限");
         }
+
+        //校验通过 发送短信  发消息到队列
+        Destination destination = new ActiveMQQueue(SMS_QUEUE);
+        Map<String,String> smsParam = new HashMap<>();
+        smsParam.put("mobile",mobile);
+        smsParam.put("tplId", Constants.MDSMS_VERCODE_TPLID);
+        smsParam.put("vercode",verCode);
+        String message = JSON.toJSONString(smsParam);
+        smsProcessor.sendSmsToQueue(destination,message);
     }
 
 
