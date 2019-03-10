@@ -1,6 +1,7 @@
 package com.su.subike.cache;
 
 
+import com.su.subike.common.exception.SuBikeException;
 import com.su.subike.user.entity.User;
 import com.su.subike.user.entity.UserElement;
 import lombok.extern.slf4j.Slf4j;
@@ -26,6 +27,7 @@ public class CommonCacheUtil {
 
     /**
      * 缓存 可以value 永久
+     *
      * @param key
      * @param value
      */
@@ -45,6 +47,7 @@ public class CommonCacheUtil {
 
     /**
      * 获取缓存key
+     *
      * @param key
      * @return
      */
@@ -66,6 +69,7 @@ public class CommonCacheUtil {
 
     /**
      * 设置key value 以及过期时间
+     *
      * @param key
      * @param value
      * @param expiry
@@ -91,6 +95,7 @@ public class CommonCacheUtil {
 
     /**
      * 删除缓存key
+     *
      * @param key
      */
     public void delKey(String key) {
@@ -110,6 +115,7 @@ public class CommonCacheUtil {
 
     /**
      * 登录时设置token
+     *
      * @param ue
      */
     public void putTokenWhenLogin(UserElement ue) {
@@ -141,10 +147,10 @@ public class CommonCacheUtil {
             try (Jedis jedis = pool.getResource()) {
                 jedis.select(0);
                 try {
-                    Map<String,String> map= jedis.hgetAll(TOKEN_PREFIX+token);
-                    if (!CollectionUtils.isEmpty(map)){
+                    Map<String, String> map = jedis.hgetAll(TOKEN_PREFIX + token);
+                    if (!CollectionUtils.isEmpty(map)) {
                         ue = UserElement.fromMap(map);
-                    }else {
+                    } else {
                         log.warn("fail to find cached element for token");
                     }
                 } catch (Exception e) {
@@ -156,5 +162,78 @@ public class CommonCacheUtil {
         }
 
         return ue;
+    }
+
+    /***
+     *
+     * @param key
+     * @param verCode
+     * @param type
+     * @param second
+     * @param ip
+     * 1 过期  2手机号发送次数超过上限  3ip超过上限
+     */
+    public int CacheForVerificationCode(String key, String verCode, String type, int second, String ip) throws SuBikeException{
+        try {
+            JedisPool pool = jedisPoolWrapper.getJedisPool();
+            if (pool != null) {
+
+                try (Jedis jedis = pool.getResource()) {
+                    jedis.select(0);
+                    String ipKey = "ip." + ip;
+                    if (ip == null) {
+                        return 3;
+                    } else {
+                        String ipSendCount = jedis.get(ipKey);
+                        try {
+                            if (ipSendCount != null && Integer.parseInt(ipSendCount) >= 10) {
+                                return 3;
+                            }
+                        } catch (NumberFormatException e) {
+                            log.error("Fail to process ip send count", e);
+                            return 3;
+                        }
+                    }
+
+                    long succ = jedis.setnx(key, verCode);
+                    if (succ == 0) {
+                        return 1;
+                    }
+
+                    String sendCount = jedis.get(key + "." + type);
+                    try {
+                        if (sendCount != null && Integer.parseInt(sendCount) >= 10) {
+                            jedis.del(key);
+                            return 2;
+                        }
+                    } catch (NumberFormatException e) {
+                        log.error("Fail to process send count", e);
+                        jedis.del(key);
+                        return 2;
+                    }
+
+                    try {
+                        // trans.set(key, value);
+                        jedis.expire(key, second);
+                        long val = jedis.incr(key + "." + type);
+                        if (val == 1) {
+                            jedis.expire(key + "." + type, 86400);
+                        }
+
+                        jedis.incr(ipKey);
+                        if (val == 1) {
+                            jedis.expire(ipKey, 86400);
+                        }
+                    } catch (Exception e) {
+                        log.error("Fail to cache data into redis", e);
+                    }
+                }
+            }
+        } catch (Exception e) {
+            log.error("Fail to cache for expiry", e);
+            throw new SuBikeException("Fail to cache for expiry");
+        }
+
+        return 0;
     }
 }

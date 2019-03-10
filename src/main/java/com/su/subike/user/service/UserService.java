@@ -8,5 +8,5 @@ public interface UserService {
 
     void modifyNikeName(User user) throws SuBikeException;
 
-    void sendVercode(String mobile, String ipFromRequest);
+    void sendVercode(String mobile, String ip) throws SuBikeException;
 }

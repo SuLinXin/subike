@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.su.subike.cache.CommonCacheUtil;
 import com.su.subike.common.exception.SuBikeException;
+import com.su.subike.common.until.RandomNumberCode;
 import com.su.subike.security.AESUtil;
 import com.su.subike.security.Base64Util;
 import com.su.subike.security.MD5Util;
@@ -11,6 +12,7 @@ import com.su.subike.security.RSAUtil;
 import com.su.subike.user.dao.UserMapper;
 import com.su.subike.user.entity.User;
 import com.su.subike.user.entity.UserElement;
+import com.sun.javaws.CacheUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.mybatis.generator.internal.util.StringUtility;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,6 +31,7 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private CommonCacheUtil cacheUtil;
 
+    private static final String VERIFYCODE_PREFIX = "verify.code.";
     @Override
     public String login(String data, String key) throws SuBikeException {
         String token = null;
@@ -93,9 +96,12 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void sendVercode(String mobile, String ipFromRequest) {
+    public void sendVercode(String mobile, String ip) throws SuBikeException{
 
+        String verCode = RandomNumberCode.verCode();
+        cacheUtil.CacheForVerificationCode(VERIFYCODE_PREFIX+mobile,verCode,"reg",60,ip);
     }
+
 
     /**
      * 生成token方法
