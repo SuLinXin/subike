@@ -4,7 +4,7 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.su.subike.cache.CommonCacheUtil;
 import com.su.subike.common.exception.SuBikeException;
-import com.su.subike.common.until.RandomNumberCode;
+import com.su.subike.common.utils.RandomNumberCode;
 import com.su.subike.security.AESUtil;
 import com.su.subike.security.Base64Util;
 import com.su.subike.security.MD5Util;
@@ -12,15 +12,11 @@ import com.su.subike.security.RSAUtil;
 import com.su.subike.user.dao.UserMapper;
 import com.su.subike.user.entity.User;
 import com.su.subike.user.entity.UserElement;
-import com.sun.javaws.CacheUtil;
 import lombok.extern.slf4j.Slf4j;
-import org.mybatis.generator.internal.util.StringUtility;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
-import sun.security.provider.MD5;
 
-import java.io.UnsupportedEncodingException;
 @Slf4j
 @Service
 public class UserServiceImpl implements UserService {
@@ -99,7 +95,17 @@ public class UserServiceImpl implements UserService {
     public void sendVercode(String mobile, String ip) throws SuBikeException{
 
         String verCode = RandomNumberCode.verCode();
-        cacheUtil.CacheForVerificationCode(VERIFYCODE_PREFIX+mobile,verCode,"reg",60,ip);
+        int result = cacheUtil.CacheForVerificationCode(VERIFYCODE_PREFIX+mobile,verCode,"reg",60,ip);
+        if (result == 1) {
+            log.info("当前验证码未过期，请稍后重试");
+            throw new SuBikeException("当前验证码未过期，请稍后重试");
+        } else if (result == 2) {
+            log.info("超过当日验证码次数上线");
+            throw new SuBikeException("超过当日验证码次数上限");
+        } else if (result == 3) {
+            log.info("超过当日验证码次数上限 {}", ip);
+            throw new SuBikeException(ip + "超过当日验证码次数上限");
+        }
     }
 
 

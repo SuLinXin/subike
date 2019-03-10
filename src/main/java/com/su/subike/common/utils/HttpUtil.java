@@ -1,4 +1,4 @@
-package com.su.subike.common.until;
+package com.su.subike.common.utils;
 
 import lombok.extern.slf4j.Slf4j;
 import org.apache.http.HttpEntity;
