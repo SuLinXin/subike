@@ -118,24 +118,24 @@ public class UserContoller extends BaseController {
      *@Date 2017/8/5 0:59
      *@Description 修改头像
      */
-//    @ApiOperation(value="上传头像",notes = "用户上传头像 file" ,httpMethod = "POST")
-//    @RequestMapping(value = "/uploadHeadImg", method = RequestMethod.POST)
-//    public ApiResult<String> uploadHeadImg(HttpServletRequest req, @RequestParam(required=false ) MultipartFile file) {
-//
-//        ApiResult<String> resp = new ApiResult<>();
-//        try {
-//            UserElement ue = getCurrentUser();
-//            userService.uploadHeadImg(file,ue.getUserId());
-//            resp.setMessage("上传成功");
-//        } catch (SuBikeException e) {
-//            resp.setCode(e.getStatusCode());
-//            resp.setMessage(e.getMessage());
-//        } catch (SuBikeException e) {
-//            log.error("Fail to update user info", e);
-//            resp.setCode(Constants.RESP_STATUS_INTERNAL_ERROR);
-//            resp.setMessage("内部错误");
-//        }
-//        return resp;
-//    }
+    @ApiOperation(value="上传头像",notes = "用户上传头像 file" ,httpMethod = "POST")
+    @RequestMapping(value = "/uploadHeadImg", method = RequestMethod.POST)
+    public ApiResult<String> uploadHeadImg(HttpServletRequest req, @RequestParam(required=false ) MultipartFile file) {
+
+        ApiResult<String> resp = new ApiResult<>();
+        try {
+            UserElement ue = getCurrentUser();
+            userService.uploadHeadImg(file,ue.getUserId());
+            resp.setMessage("上传成功");
+        } catch (SuBikeException e) {
+            resp.setCode(e.getStatusCode());
+            resp.setMessage(e.getMessage());
+        } catch (SuBikeException e) {
+            log.error("Fail to update user info", e);
+            resp.setCode(Constants.RESP_STATUS_INTERNAL_ERROR);
+            resp.setMessage("内部错误");
+        }
+        return resp;
+    }
 
 }
