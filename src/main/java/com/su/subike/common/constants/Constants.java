@@ -1,5 +1,7 @@
 package com.su.subike.common.constants;
 
+import org.omg.CORBA.PUBLIC_MEMBER;
+
 public class Constants {
 
 
@@ -24,5 +26,12 @@ public class Constants {
     public static final String MDSMS_REST_URL = "https://api.miaodiyun.com/20150822";
     public static final String MDSMS_VERCODE_TPLID= "1454862394";
 
+    /**短信验证接口 end**/
+
+    /**短信验证接口 start**/
+        public static final String QINIU_ACCESS_KEY = "";
+        public static final String QINIU_SECRET_KEY = "";
+        public static final String QINIU_HEAD_IMG_BUCKET_NAME="";
+        public static final String QINIU_HEAD_IMG_BUCKET_URL="";
     /**短信验证接口 end**/
 }
