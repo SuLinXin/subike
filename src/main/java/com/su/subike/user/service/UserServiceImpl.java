@@ -5,6 +5,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.su.subike.cache.CommonCacheUtil;
 import com.su.subike.common.constants.Constants;
 import com.su.subike.common.exception.SuBikeException;
+import com.su.subike.common.utils.QiniuFileUploadUtil;
 import com.su.subike.common.utils.RandomNumberCode;
 import com.su.subike.jms.SmsProcessor;
 import com.su.subike.security.AESUtil;
@@ -19,6 +20,7 @@ import org.apache.activemq.command.ActiveMQQueue;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.jms.Destination;
 import java.util.HashMap;
@@ -137,6 +139,23 @@ public class UserServiceImpl implements UserService {
         smsParam.put("vercode",verCode);
         String message = JSON.toJSONString(smsParam);
         smsProcessor.sendSmsToQueue(destination,message);
+    }
+
+    @Override
+    public String uploadHeadImg(MultipartFile file, Long userId) throws SuBikeException {
+        try {
+            User user = userMapper.selectByPrimaryKey(userId);
+            String imgUrlName = QiniuFileUploadUtil.uploadHeadImg(file);
+            user.setHeadImg(imgUrlName);
+            userMapper.updateByPrimaryKeySelective(user);
+
+            return Constants.QINIU_HEAD_IMG_BUCKET_URL+"/"+Constants.QINIU_HEAD_IMG_BUCKET_NAME+"/"+imgUrlName;
+
+        }catch (Exception e){
+            log.error(e.getMessage(),e);
+            throw new SuBikeException("头像上传失败");
+        }
+
     }
 
 

@@ -130,7 +130,7 @@ public class UserContoller extends BaseController {
         } catch (SuBikeException e) {
             resp.setCode(e.getStatusCode());
             resp.setMessage(e.getMessage());
-        } catch (SuBikeException e) {
+        } catch (Exception e) {
             log.error("Fail to update user info", e);
             resp.setCode(Constants.RESP_STATUS_INTERNAL_ERROR);
             resp.setMessage("内部错误");
