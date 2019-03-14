@@ -29,9 +29,9 @@ public class Constants {
     /**短信验证接口 end**/
 
     /**短信验证接口 start**/
-        public static final String QINIU_ACCESS_KEY = "";
-        public static final String QINIU_SECRET_KEY = "";
-        public static final String QINIU_HEAD_IMG_BUCKET_NAME="";
-        public static final String QINIU_HEAD_IMG_BUCKET_URL="";
+        public static final String QINIU_ACCESS_KEY = "YguhwoOdbMTQFT-L2KmgAO_FweShvMjb79WfkSl7";
+        public static final String QINIU_SECRET_KEY = "g-7nySThM73Utcs79PWDr8cMvcQVkt5x-M-sTVAN";
+        public static final String QINIU_HEAD_IMG_BUCKET_NAME="subike";
+        public static final String QINIU_HEAD_IMG_BUCKET_URL="pocvhytm4.bkt.clouddn.com";
     /**短信验证接口 end**/
 }
