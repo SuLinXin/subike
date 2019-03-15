@@ -10,6 +10,10 @@
   <sql id="Base_Column_List" >
     id, number, type, enable_flag
   </sql>
+  <insert id="generateBikeNo" parameterType="com.su.subike.bike.entity.BikeNoGen" >
+    insert into auto_inc_no (what_ever)
+    values (1)
+  </insert>
   <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
     select 
     <include refid="Base_Column_List" />
