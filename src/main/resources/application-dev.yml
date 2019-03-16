@@ -12,6 +12,10 @@ spring:
     borker-url: tcp://127.0.0.1:61616
     pool:
       enabled: false
+  #springdata
+  data:
+    mongodb:
+      uri: mongodb://127.0.0.1:27017/su-bike
 logging:
   config: classpath:logback.xml
 #reids
