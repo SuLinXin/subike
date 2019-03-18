@@ -34,4 +34,14 @@ public class Constants {
         public static final String QINIU_HEAD_IMG_BUCKET_NAME="subike";
         public static final String QINIU_HEAD_IMG_BUCKET_URL="pocvhytm4.bkt.clouddn.com";
     /**短信验证接口 end**/
+
+
+
+    /**百度云推送 start**/
+    public static final String BAIDU_YUN_PUSH_API_KEY="";
+
+    public static final String BAIDU_YUN_PUSH_SECRET_KEY="";
+
+    public static final String CHANNEL_REST_URL = "api.push.baidu.com";
+    /**百度云推送end**/
 }
