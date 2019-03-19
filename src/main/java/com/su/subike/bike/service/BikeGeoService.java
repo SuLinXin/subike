@@ -1,7 +1,12 @@
 package com.su.subike.bike.service;
 
 
-import com.mongodb.*;
+//import com.mongodb.*;
+import com.mongodb.AggregationOptions;
+import com.mongodb.BasicDBList;
+import com.mongodb.BasicDBObject;
+import com.mongodb.Cursor;
+import com.mongodb.DBObject;
 import com.su.subike.bike.entity.BikeLocation;
 import com.su.subike.bike.entity.Point;
 import com.su.subike.common.exception.SuBikeException;
@@ -16,7 +21,7 @@ import java.util.List;
 
 /**
  * @ClassName BikeGeoService
- * @Description TODO
+ * @Description
  * @Author 434945072@qq.com
  * Data 2019/3/16 14:17
  * Version 1.0
@@ -32,7 +37,7 @@ public class BikeGeoService {
     @Autowired
     private MongoTemplate mongoTemplate;
 
-    public List<BikeLocation> geoNearSphere(String collection, String locationField, Point point, long minDistance, long maxDistance, DBObject query, DBObject fields, int limit) throws SuBikeException {
+    public List<BikeLocation> geoNearSphere(String collection, String locationField, Point center, long minDistance, long maxDistance, DBObject query, DBObject fields, int limit) throws SuBikeException {
 
 
         try{
@@ -44,7 +49,7 @@ public class BikeGeoService {
                     new BasicDBObject("$nearSphere",
                             new BasicDBObject("$geometry",
                                     new BasicDBObject("type","Point")
-                                .append("coordinates",new Double[]{point.getLongitude(),point.getLatitude()}))
+                                .append("coordinates",new double[]{center.getLongitude(),center.getLatitude()}))
                                 .append("$minDistance",minDistance)
                                 .append("$maxDistance",maxDistance)
                     ));
