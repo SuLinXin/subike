@@ -1,6 +1,7 @@
 package com.su.subike.bike.service;
 
 import com.su.subike.common.exception.SuBikeException;
+import com.su.subike.user.entity.UserElement;
 
 /**
  * @ClassName BikeService
@@ -11,4 +12,5 @@ import com.su.subike.common.exception.SuBikeException;
  **/
 public interface BikeService {
     void generateBike() throws SuBikeException;
+    void unLockBike(UserElement currentUser, Long bikeNo) throws SuBikeException;
 }
