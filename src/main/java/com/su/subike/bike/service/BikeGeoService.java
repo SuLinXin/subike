@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.stereotype.Component;
 
+import javax.websocket.RemoteEndpoint;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -58,9 +59,9 @@ public class BikeGeoService {
             List<BikeLocation> result = new ArrayList<>();
             for (DBObject obj : objList){
                 BikeLocation location = new BikeLocation();
-                location.setBikeNumber(((Integer) obj.get("bike_no")).longValue());
+                location.setBikeNumber(((Integer)obj.get("bike_no")).longValue());
                 location.setStatus((Integer) obj.get("status"));
-                BasicDBList coordinates = (BasicDBList) ((BasicDBObject) obj.get("location")).get("coordinates");
+                BasicDBList coordinates = (BasicDBList) ((BasicDBObject)obj.get("loaction")).get("coordinates");
                 Double[] temp = new Double[2];
                 coordinates.toArray(temp);
                 location.setCoordinates(temp);
