@@ -1,5 +1,8 @@
 package com.su.subike;
 
+import com.su.subike.bike.entity.Point;
+import com.su.subike.bike.service.BikeGeoService;
+import com.su.subike.common.exception.SuBikeException;
 import com.su.subike.user.service.UserService;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
@@ -24,10 +27,17 @@ public class SubikeApplicationTests {
 	@Autowired
 	private UserService userService;
 
+	@Autowired
+	private BikeGeoService geoService;
+
 	@Test
 	public void contextLoads() {
 		String result = testRestTemplate.getForObject("/user/hello", String.class);
 		System.out.println(result);
+	}
+	@Test
+	public void geoTest() throws SuBikeException {
+		geoService.geoNearSphere("bike-position","location",new Point(10116.31362,39.985749),0,50,null,null,10);
 	}
 //	@Test
 //	public void test() {
