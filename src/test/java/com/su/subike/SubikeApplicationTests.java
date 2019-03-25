@@ -8,10 +8,14 @@ import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.boot.context.embedded.LocalServerPort;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
-import org.springframework.boot.web.server.LocalServerPort;
+
+import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.test.context.junit4.SpringRunner;
+
 
 @RunWith(SpringRunner.class)
 @Slf4j
@@ -30,14 +34,15 @@ public class SubikeApplicationTests {
 	@Autowired
 	private BikeGeoService geoService;
 
-	@Test
-	public void contextLoads() {
-		String result = testRestTemplate.getForObject("/user/hello", String.class);
-		System.out.println(result);
-	}
+//	@Test
+//	public void contextLoads() {
+//		String result = testRestTemplate.getForObject("/user/hello", String.class);
+//		System.out.println(result);
+//	}
 	@Test
 	public void geoTest() throws SuBikeException {
-		geoService.geoNearSphere("bike-position","location",new Point(10116.31362,39.985749),0,50,null,null,10);
+//		geoService.geoNearSphere("bike-position","location",new Point(116.312763,39.985416),0,100,null,null,10);
+		geoService.geoNear("bike-position",null,new Point(116.312763, 39.985416),10,50);
 	}
 //	@Test
 //	public void test() {

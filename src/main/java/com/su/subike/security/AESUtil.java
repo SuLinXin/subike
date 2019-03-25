@@ -1,6 +1,6 @@
 package com.su.subike.security;
 
-import org.springframework.boot.jdbc.metadata.DataSourcePoolMetadata;
+import org.springframework.stereotype.Component;
 
 import javax.crypto.*;
 import javax.crypto.spec.IvParameterSpec;
