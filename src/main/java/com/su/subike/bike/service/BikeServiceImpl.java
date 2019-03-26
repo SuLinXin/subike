@@ -44,16 +44,27 @@ public class BikeServiceImpl implements BikeService {
         bike.setNumber(bikeNoGen.getAutoIncNo());
         bikeMapper.insertSelective(bike);
     }
-
-    @Override
-    public void unLockBike(UserElement currentUser, Long bikeNo) throws SuBikeException {
-
-    }
     /**
-     *@Author JackWang [www.coder520.com]
-     *@Date 2017/8/21 22:34
      *@Description  解锁单车 准备骑行
      */
+    @Override
+    public void unLockBike(UserElement currentUser, Long bikeNo) throws SuBikeException {
+        //校验用户是否实名认证，是否有押金
+
+        //检查用户是否有正在进行的骑行记录
+
+        //检查用户钱包余额是否大于一元
+
+        //推送给单车，进行解锁
+
+        //修改Mongodb单车状态
+
+
+        //
+
+
+    }
+
 
 
 
