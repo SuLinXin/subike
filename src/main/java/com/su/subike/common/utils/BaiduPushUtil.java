@@ -6,8 +6,9 @@ import com.baidu.yun.push.exception.PushClientException;
 import com.baidu.yun.push.exception.PushServerException;
 import com.baidu.yun.push.model.PushMsgToSingleDeviceRequest;
 import com.baidu.yun.push.model.PushMsgToSingleDeviceResponse;
-import com.coder520.mamabike.common.constants.Constants;
-import com.coder520.mamabike.user.entity.UserElement;
+import com.su.subike.common.constants.Constants;
+import com.su.subike.common.exception.SuBikeException;
+import com.su.subike.user.entity.UserElement;
 
 /**
  * Created by JackWangon[www.coder520.com] 2017/8/20.
@@ -21,7 +22,7 @@ public class BaiduPushUtil {
      * @Description 单个设备推送
      */
 
-    public static void pushMsgToSingleDevice(UserElement ue, String message) throws MaMaBikeException {
+    public static void pushMsgToSingleDevice(UserElement ue, String message) throws SuBikeException {
 
         PushKeyPair pair = new PushKeyPair(Constants.BAIDU_YUN_PUSH_API_KEY, Constants.BAIDU_YUN_PUSH_SECRET_KEY);
         BaiduPushClient pushClient = new BaiduPushClient(pair, Constants.CHANNEL_REST_URL);
@@ -43,10 +44,10 @@ public class BaiduPushUtil {
             PushMsgToSingleDeviceResponse response = pushClient.pushMsgToSingleDevice(request);
         } catch (PushClientException e) {
             e.printStackTrace();
-            throw new MaMaBikeException(e.getMessage());
+            throw new SuBikeException(e.getMessage());
         } catch (PushServerException e) {
             e.printStackTrace();
-            throw new MaMaBikeException(e.getErrorMsg());
+            throw new SuBikeException(e.getErrorMsg());
         }
 
     }

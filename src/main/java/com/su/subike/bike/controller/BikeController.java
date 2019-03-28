@@ -1,6 +1,10 @@
 package com.su.subike.bike.controller;
 
+import com.su.subike.bike.service.BikeGeoService;
+import com.su.subike.bike.service.BikeService;
 import com.su.subike.common.rest.BaseController;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -15,5 +19,11 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("bike")
 public class BikeController extends BaseController {
+
+    @Autowired
+    @Qualifier("BikeServiceImpl")
+    private BikeService bikeService;
+    @Autowired
+    private BikeGeoService bikeGeoService;
 
 }
