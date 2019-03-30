@@ -3,6 +3,7 @@ package com.su.subike.bike.service;
 import com.alibaba.fastjson.JSONObject;
 import com.su.subike.bike.dao.BikeMapper;
 import com.su.subike.bike.entity.Bike;
+import com.su.subike.bike.entity.BikeLocation;
 import com.su.subike.bike.entity.BikeNoGen;
 import com.su.subike.common.exception.SuBikeException;
 import com.su.subike.user.dao.UserMapper;
@@ -65,7 +66,15 @@ public class BikeServiceImpl implements BikeService {
 
     }
 
+    @Override
+    public void lockBike(BikeLocation bikeLocation) throws SuBikeException {
 
+    }
+
+    @Override
+    public void reportLocation(BikeLocation bikeLocation) throws SuBikeException {
+
+    }
 
 
 }
