@@ -28,6 +28,9 @@ import java.util.Date;
 
 public class BikeServiceImpl implements BikeService {
 
+    private static final Byte NOT_VERYFY = 1;//未认证
+
+
 
     @Autowired
     private BikeMapper bikeMapper;
@@ -52,6 +55,10 @@ public class BikeServiceImpl implements BikeService {
     public void unLockBike(UserElement currentUser, Long bikeNo) throws SuBikeException {
         //校验用户是否实名认证，是否有押金
 
+        User user = userMapper.selectByPrimaryKey(currentUser.getUserId());
+        if (user.getVerifyFlag() == NOT_VERYFY){
+            throw new SuBikeException("用户尚未认证");
+        }
         //检查用户是否有正在进行的骑行记录
 
         //检查用户钱包余额是否大于一元
