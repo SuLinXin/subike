@@ -10,6 +10,7 @@ import com.mongodb.DBObject;
 import com.su.subike.bike.entity.BikeLocation;
 import com.su.subike.bike.entity.Point;
 import com.su.subike.common.exception.SuBikeException;
+import com.su.subike.record.entity.RideContrail;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.mongodb.core.MongoTemplate;
@@ -74,8 +75,6 @@ public class BikeGeoService {
     }
 
     /**
-     * @Author JackWang [www.coder520.com]
-     * @Date 2017/8/8 15:34
      * @Description 查找某经坐标点附近某范围内坐标点 由近到远 并且计算距离
      */
     public List<BikeLocation> geoNear(String collection, DBObject query, Point point, int limit, long maxDistance) throws SuBikeException {
@@ -116,5 +115,27 @@ public class BikeGeoService {
     }
 
 
+    public RideContrail rideContrail(String collection, String recordNo) throws SuBikeException{
 
+        try {
+            DBObject obj = mongoTemplate.getCollection(collection).findOne(new BasicDBObject("record_no", recordNo));
+            RideContrail rideContrail = new RideContrail();
+            rideContrail.setRideRecordNo((String) obj.get("record_no"));
+            rideContrail.setBikeNo(((Integer) obj.get("bike_no")).longValue());
+            BasicDBList locList = (BasicDBList) obj.get("contrail");
+            List<Point> pointList = new ArrayList<>();
+            for (Object object : locList) {
+                BasicDBList locObj = (BasicDBList) ((BasicDBObject) object).get("loc");
+                Double[] temp = new Double[2];
+                locObj.toArray(temp);
+                Point point = new Point(temp);
+                pointList.add(point);
+            }
+            rideContrail.setContrail(pointList);
+            return rideContrail;
+        } catch (Exception e) {
+            log.error("fail to query ride contrail", e);
+            throw new SuBikeException("查询单车轨迹失败");
+        }
+    }
 }
