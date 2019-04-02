@@ -2,7 +2,9 @@ package com.su.subike.bike.dao;
 
 import com.su.subike.bike.entity.Bike;
 import com.su.subike.bike.entity.BikeNoGen;
+import org.apache.ibatis.annotations.Mapper;
 
+@Mapper
 public interface BikeMapper {
     int deleteByPrimaryKey(Long id);
 

@@ -21,4 +21,8 @@ public class RandomNumberCode {
 
     }
 
+    public static String randomNo(){
+        Random random =new Random();
+        return String.valueOf(Math.abs(random.nextInt()*-10));
+    }
 }
