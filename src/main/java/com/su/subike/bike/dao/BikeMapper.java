@@ -18,5 +18,11 @@ public interface BikeMapper {
 
     int updateByPrimaryKey(Bike record);
 
+    /**
+     * 生成唯一单车编号sql
+     * @param bikeNoGen
+     */
     void generateBikeNo(BikeNoGen bikeNoGen);
+
+    Bike selectByBikeNo(Long bikeNo);
 }

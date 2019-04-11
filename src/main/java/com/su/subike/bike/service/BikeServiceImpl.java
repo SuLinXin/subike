@@ -1,12 +1,17 @@
 package com.su.subike.bike.service;
 
 import com.alibaba.fastjson.JSONObject;
+import com.mongodb.BasicDBObject;
+import com.mongodb.DBObject;
 import com.su.subike.bike.dao.BikeMapper;
 import com.su.subike.bike.entity.Bike;
 import com.su.subike.bike.entity.BikeLocation;
 import com.su.subike.bike.entity.BikeNoGen;
 import com.su.subike.common.exception.SuBikeException;
+import com.su.subike.common.utils.DateUtil;
 import com.su.subike.common.utils.RandomNumberCode;
+import com.su.subike.fee.dao.RideFeeMapper;
+import com.su.subike.fee.entity.RideFee;
 import com.su.subike.record.dao.RideRecordMapper;
 import com.su.subike.record.entity.RideRecord;
 import com.su.subike.user.dao.UserMapper;
@@ -25,7 +30,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 
 @Slf4j
@@ -58,9 +65,10 @@ public class BikeServiceImpl implements BikeService {
     @Autowired
     private MongoTemplate mongoTemplate;
     @Autowired
-//    private RideFeeMapper feeMapper;
+    private RideFeeMapper feeMapper;
 
     @Override
+    @Transactional
     public void generateBike() throws SuBikeException {
         //单车编号生成sql
         BikeNoGen bikeNoGen = new BikeNoGen();
@@ -75,6 +83,7 @@ public class BikeServiceImpl implements BikeService {
      *@Description  解锁单车 准备骑行
      */
     @Override
+    @Transactional
     public void unLockBike(UserElement currentUser, Long bikeNo) throws SuBikeException {
 
         try {
@@ -118,12 +127,85 @@ public class BikeServiceImpl implements BikeService {
     }
 
     @Override
+    @Transactional
     public void lockBike(BikeLocation bikeLocation) throws SuBikeException {
+        try {
 
+            //结束订单 计算骑行时间存订单
+            RideRecord record = rideRecordMapper.selectBikeRecordOnGoing(bikeLocation.getBikeNumber());
+            if(record==null){
+                throw new SuBikeException("骑行记录不存在");
+            }
+            Long userid = record.getUserid();
+            //查询单车类型 查询计价信息
+            Bike bike = bikeMapper.selectByBikeNo(bikeLocation.getBikeNumber());
+            if(bike==null){
+                throw new SuBikeException("单车不存在");
+            }
+            RideFee fee =feeMapper.selectBikeTypeFee(bike.getType());
+            if(fee==null){
+                throw new SuBikeException("计费信息异常");
+            }
+            BigDecimal cost = BigDecimal.ZERO;
+            record.setEndTime(new Date());
+            record.setStatus(RIDE_END);
+            Long min = DateUtil.getBetweenMin(new Date(),record.getStartTime());
+            record.setRideTime(min.intValue());
+            int minUnit =fee.getMinUnit();
+            int intMin = min.intValue();
+            if(intMin/minUnit==0){
+                //不足一个时间单位 按照一个时间单位算
+                cost = fee.getFee();
+            }else if(intMin%minUnit==0){
+                //整除了时间单位 直接计费
+                cost = fee.getFee().multiply(new BigDecimal(intMin/minUnit));
+            }else if(intMin%minUnit!=0){
+                //不整除 +1 补足一个时间单位
+                cost = fee.getFee().multiply(new BigDecimal((intMin/minUnit)+1));
+            }
+            record.setRideCost(cost);
+            rideRecordMapper.updateByPrimaryKeySelective(record);
+            //钱包扣费
+            Wallet wallet = walletMapper.selectByUserId(userid);
+            wallet.setRemainSum(wallet.getRemainSum().subtract(cost));
+            walletMapper.updateByPrimaryKeySelective(wallet);
+
+            //修改mongoDB中单车状态为锁定
+            Query query = Query.query(Criteria.where("bike_no").is(bikeLocation.getBikeNumber()));
+            Update update = Update.update("status",BIKE_LOCK)
+                    .set("location.coordinates",bikeLocation.getCoordinates());
+            mongoTemplate.updateFirst(query,update,"bike-position");
+        } catch (Exception e) {
+            log.error("fail to lock bike", e);
+            throw new SuBikeException("锁定单车失败");
+        }
     }
 
     @Override
+    @Transactional
     public void reportLocation(BikeLocation bikeLocation) throws SuBikeException {
+        //数据库中查询该单车尚未完结的订单
+        RideRecord record = rideRecordMapper.selectBikeRecordOnGoing(bikeLocation.getBikeNumber());
+        if(record==null){
+            throw new SuBikeException("骑行记录不存在");
+        }
+        // 查询mongo中是否已经有骑行的坐标记录数据
+        DBObject obj = mongoTemplate.getCollection("ride_contrail")
+                .findOne(new BasicDBObject("record_no",record.getRecordNo()));
+        //没有   插入 //已经存在 添加坐标
+        if(obj==null){
+            List<BasicDBObject> list = new ArrayList();
+            BasicDBObject temp = new BasicDBObject("loc",bikeLocation.getCoordinates());
+            list.add(temp);
+            BasicDBObject insertObj = new BasicDBObject("record_no",record.getRecordNo())
+                    .append("bike_no",record.getBikeNo())
+                    .append("contrail",list);
+            mongoTemplate.insert(insertObj,"ride_contrail");
+        }else {
+            Query query = new Query( Criteria.where("record_no").is(record.getRecordNo()));
+            Update update = new Update().push("contrail", new BasicDBObject("loc",bikeLocation.getCoordinates()));
+            mongoTemplate.updateFirst(query,update,"ride_contrail");
+        }
 
     }
 
